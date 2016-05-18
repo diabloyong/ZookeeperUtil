@@ -22,7 +22,6 @@ public class ZooKeeperUtil {
 	private ZooKeeper zooKeeper;
 	/**是否加密*/
 	private boolean encryption = false;
-//	private CountDownLatch latch = new CountDownLatch(1);
 	
 	/**
 	 * 
