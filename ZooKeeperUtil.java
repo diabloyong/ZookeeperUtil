@@ -1,8 +1,6 @@
 package com.diablo.zk.util;
 
 
-//import java.util.concurrent.CountDownLatch;
-
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.WatchedEvent;
 import org.apache.zookeeper.Watcher;
@@ -22,14 +20,14 @@ public class ZooKeeperUtil {
 	private int ZK_SESSION_TIMEOUT = 3000;
 	private String zkUrl;
 	private ZooKeeper zooKeeper;
-	/**ÊÇ·ñ¼ÓÃÜ*/
+	/**æ˜¯å¦åŠ å¯†*/
 	private boolean encryption = false;
 //	private CountDownLatch latch = new CountDownLatch(1);
 	
 	/**
 	 * 
-	 * @param zkUrl Á¬½ÓzookeeperµÄurl
-	 * @param seeesion_timeout »á»°³¬Ê±Ê±¼ä
+	 * @param zkUrl è¿æ¥zookeeperçš„url
+	 * @param seeesion_timeout ä¼šè¯è¶…æ—¶æ—¶é—´
 	 */
 	public ZooKeeperUtil(String zkUrl,int seeesion_timeout) {
 		super();
@@ -39,7 +37,7 @@ public class ZooKeeperUtil {
 	}
 	
 	/**
-	 * ÊÇ·ñÍ¨¹ıÓÃ»§ÕËºÅ»ñÈ¡Êı¾İ
+	 * æ˜¯å¦é€šè¿‡ç”¨æˆ·è´¦å·è·å–æ•°æ®
 	 * @param connectUserName
 	 * @param connectPassword
 	 */
@@ -61,41 +59,31 @@ public class ZooKeeperUtil {
 				public void process(WatchedEvent event) {	
 					String path = event.getPath();
 					if (event.getType() == Watcher.Event.EventType.None) {
-						LOGGER.info("·şÎñÆ÷Á¬½Ó³É¹¦");
-						System.out.println("·şÎñÆ÷Á¬½Ó³É¹¦");
+						LOGGER.info("æœåŠ¡å™¨è¿æ¥æˆåŠŸ");
 					}else if (event.getType() == Watcher.Event.EventType.NodeCreated) {
-						LOGGER.info(path + "½Úµã´´½¨³É¹¦");
-						System.out.println(path + "½Úµã´´½¨³É¹¦");
+						LOGGER.info(path + "èŠ‚ç‚¹åˆ›å»ºæˆåŠŸ");
 					}else if (event.getType() == Watcher.Event.EventType.NodeChildrenChanged) {
-						LOGGER.info(path + "×Ó½Úµã¸üĞÂ³É¹¦");
-						System.out.println(path + "×Ó½Úµã¸üĞÂ³É¹¦");
+						LOGGER.info(path + "å­èŠ‚ç‚¹æ›´æ–°æˆåŠŸ");
 					}else if (event.getType() == Watcher.Event.EventType.NodeDataChanged) {
-						LOGGER.info(path + "½Úµã¸üĞÂ³É¹¦");
-						System.out.println(path + "½Úµã¸üĞÂ³É¹¦");
+						LOGGER.info(path + "èŠ‚ç‚¹æ›´æ–°æˆåŠŸ");
 					}else if (event.getType() == Watcher.Event.EventType.NodeDeleted) {
-						LOGGER.info(path + "½ÚµãÉ¾³ı³É¹¦");
-						System.out.println(path + "½ÚµãÉ¾³ı³É¹¦");
-					}else if (event.getState() == Event.KeeperState.SyncConnected) {
-						 // »½ĞÑµ±Ç°ÕıÔÚÖ´ĞĞµÄÏß³Ì
-//                        latch.countDown();
-                    }
+						LOGGER.info(path + "èŠ‚ç‚¹åˆ é™¤æˆåŠŸ");
+					}
 				}
 			});
-			// Ê¹µ±Ç°Ïß³Ì´¦ÓÚµÈ´ı×´Ì¬
-//			latch.await(); 
 			while(ZooKeeper.States.CONNECTED != zooKeeper.getState()){
 				Thread.sleep(500);
 			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			LOGGER.info("ZooKeeper³õÊ¼»¯Ê§°Ü");
+			LOGGER.info("ZooKeeperåˆå§‹åŒ–å¤±è´¥");
 		}
 	}
 	/**
-	 * ´´½¨Ò»¸öÁÙÊ±ĞÔÇÒÓĞĞòµÄ ½Úµã
-	 * @param nodeUrl ½Úµãurl
-	 * @param data ½Úµã´æ´¢µÄÊı¾İ
+	 * åˆ›å»ºä¸€ä¸ªä¸´æ—¶æ€§ä¸”æœ‰åºçš„ èŠ‚ç‚¹
+	 * @param nodeUrl èŠ‚ç‚¹url
+	 * @param data èŠ‚ç‚¹å­˜å‚¨çš„æ•°æ®
 	 * @return
 	 */
 	public boolean createTempOrderNode(String nodeUrl,String data){
@@ -105,12 +93,12 @@ public class ZooKeeperUtil {
 				if (encryption) {
 					zooKeeper.create(nodeUrl, d, ZooDefs.Ids.CREATOR_ALL_ACL, CreateMode.EPHEMERAL_SEQUENTIAL); 
 				}else {
-					// ´´½¨Ò»¸öÁÙÊ±ĞÔÇÒÓĞĞòµÄ ZNode
+					// åˆ›å»ºä¸€ä¸ªä¸´æ—¶æ€§ä¸”æœ‰åºçš„ ZNode
 					zooKeeper.create(nodeUrl, d, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL); 
 				}
 				return true;
 			}else {
-				LOGGER.info(nodeUrl + "½ÚµãÒÑ´æÔÚ³É¹¦");
+				LOGGER.info(nodeUrl + "èŠ‚ç‚¹å·²å­˜åœ¨æˆåŠŸ");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -120,9 +108,9 @@ public class ZooKeeperUtil {
 	}
 	
 	/**
-	 * ´´½¨Ò»¸öÁÙÊ±ĞÔÇÒÎŞĞòµÄ ½Úµã
-	 * @param nodeUrl ½Úµãurl
-	 * @param data ½Úµã´æ´¢µÄÊı¾İ
+	 * åˆ›å»ºä¸€ä¸ªä¸´æ—¶æ€§ä¸”æ— åºçš„ èŠ‚ç‚¹
+	 * @param nodeUrl èŠ‚ç‚¹url
+	 * @param data èŠ‚ç‚¹å­˜å‚¨çš„æ•°æ®
 	 * @return
 	 */
 	public boolean createTempNode(String nodeUrl,String data){
@@ -132,12 +120,12 @@ public class ZooKeeperUtil {
 				if (encryption) {
 					zooKeeper.create(nodeUrl, d, ZooDefs.Ids.CREATOR_ALL_ACL, CreateMode.EPHEMERAL); 
 				}else {
-					// ´´½¨Ò»¸öÁÙÊ±ĞÔÇÒÓĞĞòµÄ ZNode
+					// åˆ›å»ºä¸€ä¸ªä¸´æ—¶æ€§ä¸”æœ‰åºçš„ ZNode
 					zooKeeper.create(nodeUrl, d, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL); 
 				}
 				return true;
 			}else {
-				LOGGER.info(nodeUrl + "½ÚµãÒÑ´æÔÚ³É¹¦");
+				LOGGER.info(nodeUrl + "èŠ‚ç‚¹å·²å­˜åœ¨æˆåŠŸ");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -146,9 +134,9 @@ public class ZooKeeperUtil {
 	}
 	
 	/**
-	 * ´´½¨Ò»¸öÓÀ¾ÃĞÔÇÒÓĞĞòµÄ ½Úµã
-	 * @param nodeUrl ½Úµãurl
-	 * @param data ½Úµã´æ´¢µÄÊı¾İ
+	 * åˆ›å»ºä¸€ä¸ªæ°¸ä¹…æ€§ä¸”æœ‰åºçš„ èŠ‚ç‚¹
+	 * @param nodeUrl èŠ‚ç‚¹url
+	 * @param data èŠ‚ç‚¹å­˜å‚¨çš„æ•°æ®
 	 * @return
 	 */
 	public boolean createOrderNode(String nodeUrl,String data){
@@ -158,12 +146,12 @@ public class ZooKeeperUtil {
 				if (encryption) {
 					zooKeeper.create(nodeUrl, d, ZooDefs.Ids.CREATOR_ALL_ACL, CreateMode.PERSISTENT_SEQUENTIAL); 
 				}else {
-					// ´´½¨Ò»¸öÁÙÊ±ĞÔÇÒÓĞĞòµÄ ZNode
+					// åˆ›å»ºä¸€ä¸ªä¸´æ—¶æ€§ä¸”æœ‰åºçš„ ZNode
 					zooKeeper.create(nodeUrl, d, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT_SEQUENTIAL); 
 				}
 				return true;
 			}else {
-				LOGGER.info(nodeUrl + "½ÚµãÒÑ´æÔÚ³É¹¦");
+				LOGGER.info(nodeUrl + "èŠ‚ç‚¹å·²å­˜åœ¨æˆåŠŸ");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -172,9 +160,9 @@ public class ZooKeeperUtil {
 	}
 	
 	/**
-	 * ´´½¨Ò»¸öÓÀ¾ÃĞÔÎŞĞòµÄ ½Úµã
-	 * @param nodeUrl ½Úµãurl
-	 * @param data ½Úµã´æ´¢µÄÊı¾İ
+	 * åˆ›å»ºä¸€ä¸ªæ°¸ä¹…æ€§æ— åºçš„ èŠ‚ç‚¹
+	 * @param nodeUrl èŠ‚ç‚¹url
+	 * @param data èŠ‚ç‚¹å­˜å‚¨çš„æ•°æ®
 	 * @return
 	 */
 	public boolean createNode(String nodeUrl,String data){
@@ -185,13 +173,12 @@ public class ZooKeeperUtil {
 				if (encryption) {
 					zooKeeper.create(nodeUrl, d, ZooDefs.Ids.CREATOR_ALL_ACL, CreateMode.PERSISTENT); 
 				}else {
-					// ´´½¨Ò»¸öÁÙÊ±ĞÔÇÒÓĞĞòµÄ ZNode
+					// åˆ›å»ºä¸€ä¸ªä¸´æ—¶æ€§ä¸”æœ‰åºçš„ ZNode
 					zooKeeper.create(nodeUrl, d, ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT); 
 				}
 				return true;
 			}else {
-				LOGGER.info(nodeUrl + "½ÚµãÒÑ´æÔÚ³É¹¦");
-				System.out.println(nodeUrl + "½ÚµãÒÑ´æÔÚ³É¹¦");
+				LOGGER.info(nodeUrl + "èŠ‚ç‚¹å·²å­˜åœ¨æˆåŠŸ");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -201,15 +188,15 @@ public class ZooKeeperUtil {
 	
 	/**
 	 * 
-	 * @param nodeUrl ½Úµãurl
-	 * @param data ½Úµãurl
-	 * @param version °æ±¾
+	 * @param nodeUrl èŠ‚ç‚¹url
+	 * @param data èŠ‚ç‚¹url
+	 * @param version ç‰ˆæœ¬
 	 * @return
 	 */
 	public boolean updata(String nodeUrl,String data,int version){
 		try {
 			if (zooKeeper.exists(nodeUrl, true) == null) {
-				LOGGER.info(nodeUrl + "½Úµã²»´æÔÚ³É¹¦");
+				LOGGER.info(nodeUrl + "èŠ‚ç‚¹ä¸å­˜åœ¨æˆåŠŸ");
 				return false;
 			}else {
 				zooKeeper.setData(nodeUrl, data.getBytes(), version);
@@ -222,14 +209,14 @@ public class ZooKeeperUtil {
 	
 	/**
 	 * 
-	 * @param nodeUrl ½Úµãurl
-	 * @param version °æ±¾
+	 * @param nodeUrl èŠ‚ç‚¹url
+	 * @param version ç‰ˆæœ¬
 	 * @return
 	 */
 	public boolean delete(String nodeUrl,int version){
 		try {
 			if (zooKeeper.exists(nodeUrl, true) == null) {
-				LOGGER.info(nodeUrl + "½Úµã²»´æÔÚ³É¹¦");
+				LOGGER.info(nodeUrl + "èŠ‚ç‚¹ä¸å­˜åœ¨æˆåŠŸ");
 				return false;
 			}else {
 				zooKeeper.delete(nodeUrl, version);
@@ -240,7 +227,7 @@ public class ZooKeeperUtil {
 		return true;
 	}
 	/**
-	 * »ñÈ¡½ÚµãÊı¾İ
+	 * è·å–èŠ‚ç‚¹æ•°æ®
 	 * @param nodeUrl
 	 * @return
 	 */
